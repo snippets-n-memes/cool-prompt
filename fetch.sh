@@ -1,3 +1,5 @@
+#!/bin/bash
+
 OWNER="mbmcmullen27"
 REPO="raspberry-spi"
 WF_NAME="Build All"
@@ -22,3 +24,5 @@ CONCLUSION=$(cat /tmp/workflow_runs | jq '.workflow_runs[0].conclusion')
 
 sed -i "s/STATUS=/STATUS=$STATUS/" /tmp/workflow_status
 sed -i "s/CONCLUSION=/CONCLUSION=$CONCLUSION/" /tmp/workflow_status
+
+exit 0

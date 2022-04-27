@@ -23,6 +23,12 @@ EOF
   fi
 
   cp fetch.sh ~/.cool-prompt/
+  crontab -l 2>/dev/null >/tmp/temp-crontab
+  echo "* * * * * $HOME/.cool-prompt/fetch.sh" >> /tmp/temp-crontab
+  crontab /tmp/temp-crontab
+
+  echo "###### cool-prompt block baby! #####" >> ~/.bashrc
+  
 }
 
 while getopts "hi" option; do
