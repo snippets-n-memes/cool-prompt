@@ -1,0 +1,22 @@
+name: Sample Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      time:
+        description: 'time to wait'     
+        required: true
+        default: '30'
+        type: choice
+        options:
+        - 10
+        - 30
+        - 60
+        - 120
+
+jobs:
+  wait:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a multi-line script
+        run: sleep ${{ github.event.inputs.time }}s
