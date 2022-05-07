@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       status:
-        description: 'workflow exit status'
+        description: 'This workflow should fail?'
         required: true
         default: true
         type: choice
@@ -12,7 +12,7 @@ on:
           - true
           - false
       time:
-        description: 'time to wait'     
+        description: 'How long to wait?'     
         required: true
         default: '30'
         type: choice
@@ -29,5 +29,5 @@ jobs:
       - name: sleep and exit
         run: | 
           sleep ${{ github.event.inputs.time }}s
-          if [[ "${{ github.event.inputs.status }}" == "true" ]]; then exit 1; fi
+          if [[ "${{ github.event.inputs.status }}" == "false" ]]; then exit 1; fi
 
