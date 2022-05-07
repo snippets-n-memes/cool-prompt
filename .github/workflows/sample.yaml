@@ -29,5 +29,5 @@ jobs:
       - name: sleep and exit
         run: | 
           sleep ${{ github.event.inputs.time }}s
-          [ ${{ github.event.inputs.status }} = "true" ] && exit 1
+          [ "${{ github.event.inputs.status }}" = "true" ] && exit 1
 
