@@ -19,10 +19,10 @@ CONCLUSION=
 EOF
 fi
 
-STATUS=$(cat /tmp/workflow_runs | jq '.workflow_runs[0].status')
-CONCLUSION=$(cat /tmp/workflow_runs | jq '.workflow_runs[0].conclusion')
+STATUS=$(cat /tmp/workflow_runs | jq -r '.workflow_runs[0].status')
+CONCLUSION=$(cat /tmp/workflow_runs | jq -r '.workflow_runs[0].conclusion')
 
-sed -i "s/STATUS=/STATUS=$STATUS/" /tmp/workflow_status
-sed -i "s/CONCLUSION=/CONCLUSION=$CONCLUSION/" /tmp/workflow_status
+sed -i "s/STATUS=.*/STATUS=$STATUS/" /tmp/workflow_status
+sed -i "s/CONCLUSION=.*/CONCLUSION=$CONCLUSION/" /tmp/workflow_status
 
 exit 0

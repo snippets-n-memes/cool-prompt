@@ -3,6 +3,14 @@ name: Sample Workflow
 on:
   workflow_dispatch:
     inputs:
+      status:
+        description: 'workflow exit status'
+        required: true
+        default: true
+        type: choice
+        options:
+          - true
+          - false
       time:
         description: 'time to wait'     
         required: true
@@ -18,5 +26,8 @@ jobs:
   wait:
     runs-on: ubuntu-latest
     steps:
-      - name: Run a multi-line script
-        run: sleep ${{ github.event.inputs.time }}s
+      - name: sleep and exit
+        run: | 
+          sleep ${{ github.event.inputs.time }}s
+          [ ${{ github.event.inputs.status }} = "true" ] && exit 1
+

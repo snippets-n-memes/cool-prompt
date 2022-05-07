@@ -27,8 +27,9 @@ EOF
   echo "* * * * * $HOME/.cool-prompt/fetch.sh" >> /tmp/temp-crontab
   crontab /tmp/temp-crontab
 
-  echo "###### cool-prompt block baby! #####" >> ~/.bashrc
-  
+  echo -e "\n###### cool-prompt START #####" >> ~/.bashrc
+  cat ./bashrc-block.sh >> ~/.bashrc
+  echo -e "\n###### cool-prompt END #####" >> ~/.bashrc
 }
 
 while getopts "hi" option; do
@@ -39,6 +40,9 @@ while getopts "hi" option; do
       i) # initialize environment
         Init
         exit;;
+      # authenticate
+      # edit prompt
+      # list available attributes
       ?)
         echo "USAGE: ./<scriptname> $OPTIONS"
         exit;;
