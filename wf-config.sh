@@ -27,10 +27,12 @@ EOF
   echo "* * * * * $HOME/.cool-prompt/fetch.sh" >> /tmp/temp-crontab
   crontab /tmp/temp-crontab
 
-  echo -e "\n###### cool-prompt START #####" >> ~/.bashrc
+  echo -e "\n###### cool-prompt START #####\n" >> ~/.bashrc
   cat ./bashrc-block.sh >> ~/.bashrc
-  echo -e "\n###### cool-prompt END #####" >> ~/.bashrc
+  echo -e "\n###### cool-prompt END #####\n" >> ~/.bashrc
 }
+
+
 
 while getopts "hi" option; do
    case "${option}" in

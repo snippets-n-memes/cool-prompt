@@ -4,8 +4,16 @@ RED='\033[0;31m'
 BLACK='\033[0;30m'
 END='\e[m'
 
-function get-stat() {
-  grep -oP "(?<=$1=).*$" /tmp/workflow_status
+function set-template() {
+  PS1="$CYAN[\u: \W]$(__git_ps1 " ⇵ %s")\n$END$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ "
+}
+
+function status-map () {
+  case "$1" in 
+    success)
+
+    exit;;
+  esac
 }
 
 function get-attribute() {
@@ -15,14 +23,12 @@ function get-attribute() {
 function wf-get() {
   case "$1" in
     conclusion) 
-      get-stat "CONCLUSION"
+      get-attribute "conclusion"
       exit;;
     status) 
-      get-stat "STATUS"
+      get-attribute "status"
       exit;;
     name)
       get-attribute "name"
   esac
 }
-
-print-status conclusion
