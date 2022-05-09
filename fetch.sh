@@ -11,5 +11,6 @@ url=$(curl -s -u "$USER:$PAT" -H "Accept: application/vnd.github.v3+json" \
 
 curl -s -H "Accept: application/vnd.github.v3+json"  $(echo $url)/runs \
   > /tmp/workflow_runs
+  # | jq ".workflow[0].conclusion"
 
 exit 0

@@ -32,8 +32,6 @@ EOF
   echo -e "\n###### cool-prompt END #####\n" >> ~/.bashrc
 }
 
-
-
 while getopts "hi" option; do
    case "${option}" in
       h) # display Help
