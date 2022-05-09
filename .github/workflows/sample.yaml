@@ -12,7 +12,7 @@ on:
           - true
           - false
       time:
-        description: 'How long to wait?'     
+        description: 'How long to wait (seconds)?'     
         required: true
         default: '30'
         type: choice
@@ -21,6 +21,7 @@ on:
         - 30
         - 60
         - 120
+        - 300
 
 jobs:
   wait:
