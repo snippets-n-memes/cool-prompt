@@ -10,6 +10,11 @@ url=$(curl -s -u "$USER:$PAT" -H "Accept: application/vnd.github.v3+json" \
   | jq -r ".workflows[] | select(.name == \"$WF_NAME\") | .url")
 
 curl -s -H "Accept: application/vnd.github.v3+json"  $(echo $url)/runs \
+<<<<<<< Updated upstream
   > /tmp/workflow_runs
+=======
+  | jq ".workflow_runs[0].conclusion"
+  # > /tmp/workflow_runs
+>>>>>>> Stashed changes
 
 exit 0
