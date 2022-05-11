@@ -8,18 +8,28 @@ function Help() {
     Bash prompt configuration tool for ci/cd gurus
   OPTIONS:
     -h display this help message
+    -i install 
+    -u uninstall
 EOF
 }
 
 function Init() {
   [ ! -d ~/.cool-prompt ] && mkdir ~/.cool-prompt
-  if [ ! -f ~/.cool-prompt/config ]; then 
-    cat <<EOF > ~/.cool-prompt/config
-OWNER=$OWNER
-REPO=$REPO
-WF_NAME=$WF_NAME
-USER=$USER
+  if [ ! -f ~/.cool-prompt/config.json ]; then 
+    cat <<EOF > ~/.cool-prompt/config.json
+{
+  "OWNER": "$OWNER",
+  "REPO": "$REPO",
+  "WF_NAME": "$WF_NAME",
+  "USER": "$USER",
+  "PS1": ""
+}
+
 EOF
+
+PS1='$(CYAN)[\u: \W]$(__git_ps1 " ⇵ %s")\n$(END)$(wf-get name):$(wf-get conclusion)\n$ '
+
+jq ".\"PS1\" = $PS1" ~/.cool-prompt/config.json
   fi
 
   cp fetch.sh ~/.cool-prompt/
@@ -37,6 +47,10 @@ function Uninstall() {
   crontab /tmp/temp-crontab
 
   perl -0777pe 's/\n#+ cool-prompt START #{5}.*#+ cool-prompt END #+\n//s' -i ~/.bashrc
+}
+
+function set-template() {
+  PS1="$CYAN[\u: \W]$(__git_ps1 " ⇵ %s")\n$END$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ "
 }
 
 while getopts "hiu" option; do

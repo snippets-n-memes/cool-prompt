@@ -6,10 +6,6 @@ alias _BLACK="set-color '\033[0;30m'"
 alias _YELLOW="set-color '\033[0;33m'"
 alias _END="set-color '\e[m'"
 
-function set-template() {
-  PS1="$CYAN[\u: \W]$(__git_ps1 " ⇵ %s")\n$END$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ "
-}
-
 function set-color() {
   echo -e "$1"
 }
@@ -45,4 +41,4 @@ function wf-get() {
   esac
 }
 
-export PS1='$(CYAN)[\u: \W]$(__git_ps1 " ⇵ %s")\n$(END)$(wf-get name):$(wf-get conclusion)\n$ '
+export PS1=$(jq '.PS1' $HOME/.cool-prompt/config.json)
