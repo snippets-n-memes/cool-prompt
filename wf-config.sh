@@ -35,9 +35,11 @@ EOF
 function Uninstall() {
   crontab -l | grep -v ".cool-prompt/fetch.sh" > /tmp/temp-crontab
   crontab /tmp/temp-crontab
+
+  perl -0777pe 's/\n#+ cool-prompt START #{5}.*#+ cool-prompt END #+\n//s' -i ~/.bashrc
 }
 
-while getopts "hi" option; do
+while getopts "hiu" option; do
    case "${option}" in
       h) # display Help
         Help

@@ -25,13 +25,13 @@ function conclusion-map () {
 }
 
 function get-attribute() {
-  cat /tmp/workflow_runs | jq -r '.workflow_runs[0].$1'
+  cat /tmp/workflow_runs | jq -r ".workflow_runs[0].$1"
 }
 
 function wf-get() {
   case "$1" in
     conclusion) 
-      get-attribute "conclusion"
+      conclusion-map $(get-attribute "conclusion")
       exit;;
     status) 
       get-attribute "status"
@@ -41,6 +41,4 @@ function wf-get() {
   esac
 }
 
-# export PS1='$(CYAN)[\u: \W]$(__git_ps1 " ⇵ %s")\n$(END)$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ '
-
-get-attribute "conclusion"
+export PS1='$(CYAN)[\u: \W]$(__git_ps1 " ⇵ %s")\n$(END)$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ '
