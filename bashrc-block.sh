@@ -1,9 +1,10 @@
-alias CYAN="set-color '\033[0;36m'"
-alias BLUE="set-color '\033[0;34m'"
-alias RED="set-color '\033[0;31m'"
-alias GREEN="set-color '\033[0;32m'"
-alias BLACK="set-color '\033[0;30m'"
-alias END="set-color '\e[m'"
+alias _CYAN="set-color '\033[0;36m'"
+alias _BLUE="set-color '\033[0;34m'"
+alias _RED="set-color '\033[0;31m'"
+alias _GREEN="set-color '\033[0;32m'"
+alias _BLACK="set-color '\033[0;30m'"
+alias _YELLOW="set-color '\033[0;33m'"
+alias _END="set-color '\e[m'"
 
 function set-template() {
   PS1="$CYAN[\u: \W]$(__git_ps1 " ⇵ %s")\n$END$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ "
@@ -16,10 +17,13 @@ function set-color() {
 function conclusion-map () {
   case "$1" in 
     success)
-      echo "$(GREEN)⬤$(END)"
+      echo "$(_GREEN)⬤$(_END)"
       exit;;
     failure)
-      echo "$(RED)⬤$(END)"
+      echo "$(_RED)⬤$(_END)"
+      exit;;
+    *)
+      echo "$(_YELLOW)⬤$(_END)"
       exit;;
   esac
 }
@@ -41,4 +45,4 @@ function wf-get() {
   esac
 }
 
-export PS1='$(CYAN)[\u: \W]$(__git_ps1 " ⇵ %s")\n$(END)$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ '
+export PS1='$(CYAN)[\u: \W]$(__git_ps1 " ⇵ %s")\n$(END)$(wf-get name):$(wf-get conclusion)\n$ '
