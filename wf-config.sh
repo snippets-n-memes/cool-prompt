@@ -32,14 +32,10 @@ EOF
   echo -e "\n###### cool-prompt END #####\n" >> ~/.bashrc
 }
 
-<<<<<<< Updated upstream
-
-=======
 function Uninstall() {
   crontab -l | grep -v ".cool-prompt/fetch.sh" > /tmp/temp-crontab
   crontab /tmp/temp-crontab
 }
->>>>>>> Stashed changes
 
 while getopts "hi" option; do
    case "${option}" in
