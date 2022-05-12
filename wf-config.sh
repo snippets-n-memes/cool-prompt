@@ -27,9 +27,10 @@ function Init() {
 
 EOF
 
-PS1='$(CYAN)[\u: \W]$(__git_ps1 " ⇵ %s")\n$(END)$(wf-get name):$(wf-get conclusion)\n$ '
-
-jq ".\"PS1\" = $PS1" ~/.cool-prompt/config.json
+    # PS1='$(CYAN)[\\\\u: \W]$(__git_ps1 " ⇵ %s")\\n$(END)$(wf-get name):$(wf-get conclusion)\\n$ '
+    PS1='\$(_CYAN)[\\\\u: \\\\W]\$(__git_ps1 \\" ⇵ %s\\")\\n\$(_END)\$(wf-get name):\$(wf-get conclusion)\\n$'
+    # jq ".\"PS1\" = $PS1" ~/.cool-prompt/config.json
+    sed -i "s/\"PS1\": \"\"/\"PS1\": \"$PS1\"/" ~/.cool-prompt/config.json
   fi
 
   cp fetch.sh ~/.cool-prompt/

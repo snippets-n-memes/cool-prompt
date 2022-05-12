@@ -41,4 +41,4 @@ function wf-get() {
   esac
 }
 
-export PS1=$(jq '.PS1' $HOME/.cool-prompt/config.json)
+export PS1=$(jq -r '.PS1' $HOME/.cool-prompt/config.json)
