@@ -1,4 +1,4 @@
-OPTIONS="[-hi]"
+OPTIONS="[-hiu]"
 
 function Help() {
   cat <<EOF
@@ -53,7 +53,7 @@ function set-template() {
   PS1="$CYAN[\u: \W]$(__git_ps1 " ⇵ %s")\n$END$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ "
 }
 
-while getopts "hiu" option; do
+while getopts "$OPTIONS" option; do
    case "${option}" in
       h) # display Help
         Help
