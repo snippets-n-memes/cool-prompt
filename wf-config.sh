@@ -1,9 +1,9 @@
-OPTIONS="[-hiu]"
+OPTIONS="hiu"
 
 function Help() {
   cat <<EOF
   USAGE: 
-      ./<scriptname> $OPTIONS
+      ./<scriptname> [-$OPTIONS]
   DESCRIPTION:
     Bash prompt configuration tool for ci/cd gurus
   OPTIONS:
