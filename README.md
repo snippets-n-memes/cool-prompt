@@ -16,5 +16,5 @@ PS1='\[\033[01;32m\]🖫Kube-Space\[\033[00m\]\[\033[01;34m\]\w\[\033[01;32m\] �
 
 - new model ps1
 ```sh
-PS1="$CYAN[\u: \W]$(__git_ps1 " ⇵ %s")\n$OFF$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ "
+PS1='$(_CYAN)[\u: \W]$(__git_ps1 " ⇵ %s")\n$(_END)$(wf-get name):$(wf-get conclusion)\n$ '
 ```

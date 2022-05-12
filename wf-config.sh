@@ -13,6 +13,11 @@ function Help() {
 EOF
 }
 
+function set-template() {
+  PS1='\$(_CYAN)[\\\\u: \\\\W]\$(__git_ps1 \\" ⇵ %s\\")\\n\$(_END)\$(wf-get name):\$(wf-get conclusion)\\n$'
+  sed -i "s/\"PS1\": \"\"/\"PS1\": \"$PS1\"/" ~/.cool-prompt/config.json
+}
+
 function Init() {
   [ ! -d ~/.cool-prompt ] && mkdir ~/.cool-prompt
   if [ ! -f ~/.cool-prompt/config.json ]; then 
@@ -26,11 +31,7 @@ function Init() {
 }
 
 EOF
-
-    # PS1='$(CYAN)[\\\\u: \W]$(__git_ps1 " ⇵ %s")\\n$(END)$(wf-get name):$(wf-get conclusion)\\n$ '
-    PS1='\$(_CYAN)[\\\\u: \\\\W]\$(__git_ps1 \\" ⇵ %s\\")\\n\$(_END)\$(wf-get name):\$(wf-get conclusion)\\n$'
-    # jq ".\"PS1\" = $PS1" ~/.cool-prompt/config.json
-    sed -i "s/\"PS1\": \"\"/\"PS1\": \"$PS1\"/" ~/.cool-prompt/config.json
+    set-template
   fi
 
   cp fetch.sh ~/.cool-prompt/
@@ -48,10 +49,6 @@ function Uninstall() {
   crontab /tmp/temp-crontab
 
   perl -0777pe 's/\n#+ cool-prompt START #{5}.*#+ cool-prompt END #+\n//s' -i ~/.bashrc
-}
-
-function set-template() {
-  PS1="$CYAN[\u: \W]$(__git_ps1 " ⇵ %s")\n$END$(wf-get name)->$(wf-get status):$(wf-get conclusion)\n$ "
 }
 
 while getopts "$OPTIONS" option; do
