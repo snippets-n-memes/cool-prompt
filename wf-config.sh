@@ -1,25 +1,37 @@
-OPTIONS="[-hi]"
+OPTIONS="hiu"
 
 function Help() {
   cat <<EOF
   USAGE: 
-      ./<scriptname> $OPTIONS
+      ./<scriptname> [-$OPTIONS]
   DESCRIPTION:
     Bash prompt configuration tool for ci/cd gurus
   OPTIONS:
     -h display this help message
+    -i install 
+    -u uninstall
 EOF
+}
+
+function set-template() {
+  PS1='\$(_CYAN)[\\\\u: \\\\W]\$(__git_ps1 \\" ⇵ %s\\")\\n\$(_END)\$(wf-get name):\$(wf-get conclusion)\\n$'
+  sed -i "s/\"PS1\": \"\"/\"PS1\": \"$PS1\"/" ~/.cool-prompt/config.json
 }
 
 function Init() {
   [ ! -d ~/.cool-prompt ] && mkdir ~/.cool-prompt
-  if [ ! -f ~/.cool-prompt/config ]; then 
-    cat <<EOF > ~/.cool-prompt/config
-OWNER=$OWNER
-REPO=$REPO
-WF_NAME=$WF_NAME
-USER=$USER
+  if [ ! -f ~/.cool-prompt/config.json ]; then 
+    cat <<EOF > ~/.cool-prompt/config.json
+{
+  "OWNER": "$OWNER",
+  "REPO": "$REPO",
+  "WF_NAME": "$WF_NAME",
+  "USER": "$USER",
+  "PS1": ""
+}
+
 EOF
+    set-template
   fi
 
   cp fetch.sh ~/.cool-prompt/
@@ -39,7 +51,7 @@ function Uninstall() {
   perl -0777pe 's/\n#+ cool-prompt START #{5}.*#+ cool-prompt END #+\n//s' -i ~/.bashrc
 }
 
-while getopts "hiu" option; do
+while getopts "$OPTIONS" option; do
    case "${option}" in
       h) # display Help
         Help
