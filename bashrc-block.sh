@@ -1,13 +1,14 @@
-alias _CYAN="set-color '\033[0;36m'"
-alias _BLUE="set-color '\033[0;34m'"
-alias _RED="set-color '\033[0;31m'"
-alias _GREEN="set-color '\033[0;32m'"
-alias _BLACK="set-color '\033[0;30m'"
-alias _YELLOW="set-color '\033[0;33m'"
-alias _END="set-color '\e[m'"
+alias _CYAN="echo -e '\033[0;36m'"
+alias _BLUE="echo -e '\033[0;34m'"
+alias _RED="echo -e '\033[0;31m'"
+alias _GREEN="echo -e '\033[0;32m'"
+alias _BLACK="echo -e '\033[0;30m'"
+alias _YELLOW="echo -e '\033[1;33m'"
+alias _END="echo -e '\e[m'"
 
-function set-color() {
-  echo -e "$1"
+function git-branch() {
+  BRANCH=$(git branch --show-current 2> /dev/null)
+  [ "${BRANCH}" ] && echo "$(_YELLOW)⇵ $BRANCH$(_CYAN)"
 }
 
 function conclusion-map () {
@@ -25,7 +26,7 @@ function conclusion-map () {
 }
 
 function get-attribute() {
-  cat /tmp/workflow_runs | jq -r ".workflow_runs[0].$1"
+  jq -r ".workflow_runs[0].$1" /tmp/workflow_runs 2> /dev/null
 }
 
 function wf-get() {
@@ -38,6 +39,7 @@ function wf-get() {
       exit;;
     name)
       get-attribute "name"
+      exit;;
   esac
 }
 

@@ -1,13 +1,19 @@
 # cool-prompt
 
+Github workflow status in your terminal prompt with pure bash 
+
 ### Install Directions
-1. clone repo and run `./wf-config.sh -i` to setup required configuration files and directories
+```sh
+./prompt.sh -i && . ~/.bashrc
+```
+1. clone repo and run `./prompt.sh -i` to setup required configuration files and directories
     - this creates a directory `$HOME/.cool-prompt`
     - adds an entry to your crontab
     - adds some functions to your `.bashrc`
+2. Source your .bashrc file
 
-2. if you're using WSL cron needs to be configured to autostart
-3. set prompt using the new functions
+3. if you're using WSL cron needs to be configured to autostart
+4. set prompt using the new functions
 
 - old model ps1
 ```sh
