@@ -1,9 +1,5 @@
 #!/bin/bash
 
-function get-config() {
-  jq -r ".$1" ~/.cool-prompt/config.json 
-}
-
 OWNER=$(get-config OWNER)
 REPO=$(get-config REPO)
 WF_NAME=$(get-config WF_NAME)

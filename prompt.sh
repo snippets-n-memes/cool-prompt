@@ -19,10 +19,10 @@ function set-template() {
       PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch)\\n\$(_END)\$(wf-get name):\$(wf-get conclusion)\\n$'
       ;;
     SHORT)
-      PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch):\$(_END)\$(wf-get conclusion)\\n$'
+      PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch):\$(_END)\$(wf-get conclusion)\\n\\\\$'
       ;;
   esac
-  sed -i "s/\"PS1\": \"\"/\"PS1\": \"$PS1\"/" ~/.cool-prompt/config.json
+  sed -i "s/\"PS1\": \"\"/\"PS1\": \"$PS1\"/" $(find-config)
 }
 
 function Init() {
@@ -48,31 +48,33 @@ EOF
   cp fetch.sh ~/.cool-prompt/
 
   crontab -l 2>/dev/null >/tmp/temp-crontab
-  echo "* * * * * $HOME/.cool-prompt/fetch.sh" >> /tmp/temp-crontab
+  echo "* * * * * . $HOME/.bashrc; bash --login $HOME/.cool-prompt/fetch.sh" >> /tmp/temp-crontab
   crontab /tmp/temp-crontab
 
-  echo -ne "\n###### cool-prompt START #####\n" >> ~/.bashrc
-  cat ./bashrc-block.sh >> ~/.bashrc
-  echo -ne "\n###### cool-prompt END #####\n" >> ~/.bashrc
+  cat ./bashrc-block.sh >> /tmp/.bashrc
+  cat ~/.bashrc >> /tmp/.bashrc
+  echo 'export PS1=$(get-config PS1)' >> /tmp/.bashrc
+  mv /tmp/.bashrc ~/.bashrc
 }
 
 function Uninstall() {
+  sed -iz ':begin;$!N;s/export PS1=$(get-config PS1)//' ~/.bashrc
   rm -rf ~/.cool-prompt/
 
   crontab -l | grep -v ".cool-prompt/fetch.sh" > /tmp/temp-crontab
   crontab /tmp/temp-crontab
 
-  perl -0777pe 's/\n#+ cool-prompt START #{5}.*#+ cool-prompt END #+\n//s' -i ~/.bashrc
+  perl -0777pe 's/#+ cool-prompt START #{5}.*#+ cool-prompt END #+\n//s' -i ~/.bashrc
 }
 
 function set-config() {
-  cat ~/.cool-prompt/config.json | jq \
+  cat $(find-config) | jq \
     --arg key "$1" \
     --arg value "$2" \
     '.[$key] = $value' \
   > /tmp/config.json
   
-  mv /tmp/config.json ~/.cool-prompt/config.json
+  mv /tmp/config.json $(find-config)
 }
 
 while getopts "$OPTIONS" option; do
@@ -81,7 +83,7 @@ while getopts "$OPTIONS" option; do
       u) Uninstall ;;
       i) Init && echo ".bashrc configured" ;;
       s) set-config ${OPTARG%%=*} ${OPTARG##*=} ;;
-      # edit prompt
+      # edit
       # list available attributes
       ?) echo "USAGE: ./<scriptname> [-$OPTIONS]" ;;
    esac

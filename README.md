@@ -10,10 +10,10 @@ Github workflow status in your terminal prompt with pure bash
     - this creates a directory `$HOME/.cool-prompt`
     - adds an entry to your crontab
     - adds some functions to your `.bashrc`
-2. Source your .bashrc file
-
-3. if you're using WSL cron needs to be configured to autostart
-4. set prompt using the new functions
+2. Make sure your crontab shell is set to bash
+3. Source your .bashrc file
+4. if you're using WSL cron needs to be configured to autostart
+5. set prompt using the new functions
 
 - old model ps1
 ```sh
