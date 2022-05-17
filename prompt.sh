@@ -44,27 +44,29 @@ function Init() {
 
 EOF
 
+  . bashrc-block.sh
   set-template SHORT
+
   cp fetch.sh ~/.cool-prompt/
+  cp bashrc-block.sh ~/.cool-prompt/
 
   crontab -l 2>/dev/null >/tmp/temp-crontab
-  echo "* * * * * . $HOME/.bashrc; bash --login $HOME/.cool-prompt/fetch.sh" >> /tmp/temp-crontab
+  echo '* * * * * . $HOME/.bashrc; cd $PWD; bash --login $HOME/.cool-prompt/fetch.sh' >> /tmp/temp-crontab
   crontab /tmp/temp-crontab
 
-  cat ./bashrc-block.sh >> /tmp/.bashrc
+  echo ". ~/.cool-prompt/bashrc-block.sh" >> /tmp/.bashrc
   cat ~/.bashrc >> /tmp/.bashrc
   echo 'export PS1=$(get-config PS1)' >> /tmp/.bashrc
   mv /tmp/.bashrc ~/.bashrc
 }
 
 function Uninstall() {
-  sed -iz ':begin;$!N;s/export PS1=$(get-config PS1)//' ~/.bashrc
+  sed -i '/\. ~\/.cool-prompt\/bashrc-block\.sh/d' ~/.bashrc
+  sed -i '/export PS1=$(get-config PS1)/d' ~/.bashrc
   rm -rf ~/.cool-prompt/
 
   crontab -l | grep -v ".cool-prompt/fetch.sh" > /tmp/temp-crontab
   crontab /tmp/temp-crontab
-
-  perl -0777pe 's/#+ cool-prompt START #{5}.*#+ cool-prompt END #+\n//s' -i ~/.bashrc
 }
 
 function set-config() {

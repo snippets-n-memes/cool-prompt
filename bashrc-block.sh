@@ -3,7 +3,7 @@
 alias _CYAN="echo -e '\033[1;36m'"
 alias _BLUE="echo -e '\033[0;34m'"
 alias _RED="echo -e '\033[1;31m'"
-alias _GREEN="echo -e '\033[1;32m'"
+alias _GREEN="echo -e '\033[0;32m'"
 alias _BLACK="echo -e '\033[0;30m'"
 alias _YELLOW="echo -e '\033[1;33m'"
 alias _END="echo -e '\e[m'"
@@ -11,7 +11,6 @@ alias _END="echo -e '\e[m'"
 function find-config() {
   if [ -f ".cool-prompt/config.json" ]; then
     echo "${PWD%/}/.cool-prompt/config.json"
-    exit 0
   elif [ "$PWD" = / ]; then
     echo $HOME/.cool-prompt/config.json 
   else
