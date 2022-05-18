@@ -1,4 +1,4 @@
-###### cool-prompt START #####
+#!/bin/bash
 
 alias _CYAN="echo -e '\033[1;36m'"
 alias _BLUE="echo -e '\033[0;34m'"
@@ -7,6 +7,17 @@ alias _GREEN="echo -e '\033[0;32m'"
 alias _BLACK="echo -e '\033[0;30m'"
 alias _YELLOW="echo -e '\033[1;33m'"
 alias _END="echo -e '\e[m'"
+
+
+function update-pwd() {
+  for i in $(ps h --ppid $(pgrep crond)); do
+    [[ $$ = $i ]] && exit 1
+  done
+  DIR=$(pwd)
+  sed -E -i "s|(\"PWD\":) \"[^\"]*\"|\1 \"$DIR\"|" $HOME/.cool-prompt/config.json
+}
+
+update-pwd
 
 function find-config() {
   if [ -f ".cool-prompt/config.json" ]; then
@@ -58,5 +69,3 @@ function wf-get() {
       exit;;
   esac
 }
-
-###### cool-prompt END ####

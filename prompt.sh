@@ -22,7 +22,7 @@ function set-template() {
       PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch):\$(_END)\$(wf-get conclusion)\\n\\\\$'
       ;;
   esac
-  sed -i "s/\"PS1\": \"\"/\"PS1\": \"$PS1\"/" $(find-config)
+  sed -i -E "s/(\"PS1\":) \"\"/\1 \"$PS1\"/" $HOME/.cool-prompt/config.json
 }
 
 function Init() {
@@ -39,7 +39,8 @@ function Init() {
   "REPO": "$REPO",
   "WF_NAME": "$WF_NAME",
   "USER": "$USER",
-  "PS1": ""
+  "PS1": "",
+  "PWD": ""
 }
 
 EOF
@@ -51,7 +52,7 @@ EOF
   cp bashrc-block.sh ~/.cool-prompt/
 
   crontab -l 2>/dev/null >/tmp/temp-crontab
-  echo '* * * * * . $HOME/.bashrc; cd $PWD; bash --login $HOME/.cool-prompt/fetch.sh' >> /tmp/temp-crontab
+  echo '* * * * * . $HOME/.bashrc; cd $(jq -r ".PWD" $HOME/.cool-prompt/config.json); bash --login $HOME/.cool-prompt/fetch.sh' >> /tmp/temp-crontab
   crontab /tmp/temp-crontab
 
   echo ". ~/.cool-prompt/bashrc-block.sh" >> /tmp/.bashrc
