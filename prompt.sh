@@ -31,6 +31,8 @@ function Init() {
   [ ! "$OWNER" ] && OWNER="snippets-n-memes"
   [ ! "$REPO" ] && REPO="cool-prompt"
   [ ! "$WF_NAME" ] && WF_NAME="Sample Workflow"
+  [ ! "$WF_HOST" ] && WF_HOST="github"
+  [ ! "$PROJECT_ID" ] && PROJECT_ID="36257401"
   
   mkdir ~/.cool-prompt 
   cat <<EOF > ~/.cool-prompt/config.json
@@ -39,8 +41,8 @@ function Init() {
   "REPO": "$REPO",
   "WF_NAME": "$WF_NAME",
   "USER": "$USER",
-  "PS1": "",
-  "PWD": ""
+  "HOST": "$WF_HOST",
+  "PS1": ""
 }
 
 EOF
@@ -52,7 +54,7 @@ EOF
   cp bashrc-block.sh ~/.cool-prompt/
 
   crontab -l 2>/dev/null >/tmp/temp-crontab
-  echo '* * * * * . $HOME/.bashrc; cd $(jq -r ".PWD" $HOME/.cool-prompt/config.json); bash --login $HOME/.cool-prompt/fetch.sh' >> /tmp/temp-crontab
+  echo '* * * * * . $HOME/.bashrc; bash --login $HOME/.cool-prompt/fetch.sh' >> /tmp/temp-crontab
   crontab /tmp/temp-crontab
 
   echo ". ~/.cool-prompt/bashrc-block.sh" >> /tmp/.bashrc
@@ -68,6 +70,7 @@ function Uninstall() {
 
   crontab -l | grep -v ".cool-prompt/fetch.sh" > /tmp/temp-crontab
   crontab /tmp/temp-crontab
+  rm /tmp/temp-crontab
 }
 
 function set-config() {

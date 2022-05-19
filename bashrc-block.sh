@@ -8,17 +8,6 @@ alias _BLACK="echo -e '\033[0;30m'"
 alias _YELLOW="echo -e '\033[1;33m'"
 alias _END="echo -e '\e[m'"
 
-
-function update-pwd() {
-  for i in $(ps h --ppid $(pgrep crond)); do
-    [[ $$ = $i ]] && exit 1
-  done
-  DIR=$(pwd)
-  sed -E -i "s|(\"PWD\":) \"[^\"]*\"|\1 \"$DIR\"|" $HOME/.cool-prompt/config.json
-}
-
-update-pwd
-
 function find-config() {
   if [ -f ".cool-prompt/config.json" ]; then
     echo "${PWD%/}/.cool-prompt/config.json"
@@ -27,6 +16,12 @@ function find-config() {
   else
     (cd .. && find-config)
   fi
+}
+
+function config-name() {
+  find-config \
+    | awk -F'/.cool-prompt' '{print $1}' \
+    | tr '/' '_'
 }
 
 function get-config() {
@@ -43,7 +38,7 @@ function conclusion-map () {
     success)
       echo "$(_GREEN)⬤$(_END)"
       exit;;
-    failure)
+    failure|failed)
       echo "$(_RED)⬤$(_END)"
       exit;;
     *)
@@ -53,7 +48,7 @@ function conclusion-map () {
 }
 
 function get-attribute() {
-  jq -r ".workflow_runs[0].$1" /tmp/workflow_runs 2> /dev/null
+  jq -r ".workflow_runs[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
 }
 
 function wf-get() {
@@ -62,7 +57,7 @@ function wf-get() {
       conclusion-map $(get-attribute "conclusion")
       exit;;
     status) 
-      get-attribute "status"
+      conclusion-map $(get-attribute "status")
       exit;;
     name)
       get-attribute "name"
