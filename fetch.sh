@@ -34,7 +34,7 @@ function config-paths() {
 config-paths > ~/.cool-prompt/paths
 while read dir; do
     cd $dir
-    WF_HOST=$(jq -r '.HOST' $(find-config))
+    WF_HOST=$(get-config HOST)
     case $WF_HOST in
       github) github-workflow ;;
       gitlab) gitlab-pipeline ;;

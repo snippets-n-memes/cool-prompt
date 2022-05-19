@@ -34,11 +34,11 @@ function git-branch() {
 }
 
 function conclusion-map () {
-  case "$1" in 
+  case $1 in 
     success)
       echo "$(_GREEN)⬤$(_END)"
       exit;;
-    failure|failed)
+    failure | failed)
       echo "$(_RED)⬤$(_END)"
       exit;;
     *)
@@ -48,7 +48,14 @@ function conclusion-map () {
 }
 
 function get-attribute() {
-  jq -r ".workflow_runs[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+  case "$(get-config HOST)" in
+    github)
+      jq -r ".workflow_runs[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+      ;;
+    gitlab)
+      jq -r ".[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+      ;;
+  esac
 }
 
 function wf-get() {
