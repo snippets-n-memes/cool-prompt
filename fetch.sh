@@ -5,12 +5,17 @@ function github-workflow() {
   REPO=$(get-config REPO)
   WF_NAME=$(get-config WF_NAME)
   USER=$(get-config USER)
+  URL=$(get-config URL)
 
-  url=$(curl -s -u "$USER:$PAT" -H "Accept: application/vnd.github.v3+json" \
-    https://api.github.com/repos/$OWNER/$REPO/actions/workflows \
-    | jq -r ".workflows[] | select(.name == \"$WF_NAME\") | .url") 
+  if [[ "${URL:-null}" = "null" ]]; then
+    URL=$(curl -s -u "$USER:$GH_PAT" -H "Accept: application/vnd.github.v3+json" \
+      https://api.github.com/repos/$OWNER/$REPO/actions/workflows \
+      | jq -r ".workflows[] | select(.name == \"$WF_NAME\") | .url" \
+      2> $HOME/.cool-prompt/log) 
+    set-config "URL" "$URL"
+  fi
 
-  curl -s -H "Accept: application/vnd.github.v3+json"  $(echo $url)/runs \
+  curl -s -H "Accept: application/vnd.github.v3+json"  $URL/runs \
     2> $HOME/.cool-prompt/log \
     1> "/tmp/$(config-name)_workflow_runs"
 }
@@ -18,7 +23,7 @@ function github-workflow() {
 function gitlab-pipeline() {
   PROJECT_ID=$(get-config PROJECT_ID)
 
-  curl -s -H "PRIVATE-TOKEN: $PAT" \
+  curl -s -H "PRIVATE-TOKEN: $GL_PAT" \
     "https://gitlab.com/api/v4/projects/$PROJECT_ID/pipelines" \
     2> $HOME/.cool-prompt/log \
     1> "/tmp/$(config-name)_workflow_runs" 

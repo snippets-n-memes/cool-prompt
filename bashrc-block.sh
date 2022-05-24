@@ -25,7 +25,19 @@ function config-name() {
 }
 
 function get-config() {
-  jq -r ".$1" $(find-config 2> $HOME/.cool-prompt/log) 
+  DIR=$(find-config)
+  [ "$1" = "PS1" ] && DIR=$HOME/.cool-prompt/config.json
+  jq -r ".$1" $DIR 
+}
+
+function set-config() {
+  cat $(find-config) | jq \
+    --arg key "$1" \
+    --arg value "$2" \
+    '.[$key] = $value' \
+  > /tmp/config.json
+  
+  mv /tmp/config.json $(find-config)
 }
 
 function git-branch() {
@@ -65,14 +77,14 @@ function get-attribute() {
 
 function wf-get() {
   case "$1" in
-    conclusion) 
-      conclusion-map $(get-attribute "conclusion")
+    status)
+      WF_HOST="$(get-config HOST)" 
+      [[ "$WF_HOST" = "github" ]] \
+        && conclusion-map $(get-attribute-gh "conclusion") \
+        || conclusion-map $(get-attribute-gl "status")
       exit;;
-    status) 
-      conclusion-map $(get-attribute "status")
-      exit;;
-    name)
-      get-attribute "name"
+    *)
+      get-attribute $1
       exit;;
   esac
 }

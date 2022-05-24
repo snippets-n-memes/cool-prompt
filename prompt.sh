@@ -19,7 +19,7 @@ function set-template() {
       PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch)\\n\$(_END)\$(wf-get name):\$(wf-get conclusion)\\n$'
       ;;
     SHORT)
-      PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch):\$(_END)\$(wf-get conclusion)\\n\\\\$'
+      PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch):\$(_END)\$(wf-get status)\\n\\\\$'
       ;;
   esac
   sed -i -E "s/(\"PS1\":) \"\"/\1 \"$PS1\"/" $HOME/.cool-prompt/config.json
@@ -42,6 +42,7 @@ function Init() {
   "WF_NAME": "$WF_NAME",
   "USER": "$USER",
   "HOST": "$WF_HOST",
+  "URL": "",
   "PS1": ""
 }
 
@@ -71,16 +72,6 @@ function Uninstall() {
   crontab -l | grep -v ".cool-prompt/fetch.sh" > /tmp/temp-crontab
   crontab /tmp/temp-crontab
   rm /tmp/temp-crontab
-}
-
-function set-config() {
-  cat $(find-config) | jq \
-    --arg key "$1" \
-    --arg value "$2" \
-    '.[$key] = $value' \
-  > /tmp/config.json
-  
-  mv /tmp/config.json $(find-config)
 }
 
 while getopts "$OPTIONS" option; do
