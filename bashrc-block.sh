@@ -1,4 +1,4 @@
-###### cool-prompt START #####
+#!/bin/bash
 
 alias _CYAN="echo -e '\033[1;36m'"
 alias _BLUE="echo -e '\033[0;34m'"
@@ -18,8 +18,26 @@ function find-config() {
   fi
 }
 
+function config-name() {
+  find-config \
+    | awk -F'/.cool-prompt' '{print $1}' \
+    | tr '/' '_'
+}
+
 function get-config() {
-  jq -r ".$1" $(find-config 2> $HOME/.cool-prompt/log) 
+  DIR=$(find-config)
+  [ "$1" = "PS1" ] && DIR=$HOME/.cool-prompt/config.json
+  jq -r ".$1" $DIR 
+}
+
+function set-config() {
+  cat $(find-config) | jq \
+    --arg key "$1" \
+    --arg value "$2" \
+    '.[$key] = $value' \
+  > /tmp/config.json
+  
+  mv /tmp/config.json $(find-config)
 }
 
 function git-branch() {
@@ -28,11 +46,11 @@ function git-branch() {
 }
 
 function conclusion-map () {
-  case "$1" in 
+  case $1 in 
     success)
       echo "$(_GREEN)⬤$(_END)"
       exit;;
-    failure)
+    failure | failed)
       echo "$(_RED)⬤$(_END)"
       exit;;
     *)
@@ -41,22 +59,32 @@ function conclusion-map () {
   esac
 }
 
+function get-attribute-gh() {
+  jq -r ".workflow_runs[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+}
+
+function get-attribute-gl() {
+  jq -r ".[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+}
+
 function get-attribute() {
-  jq -r ".workflow_runs[0].$1" /tmp/workflow_runs 2> /dev/null
+  WF_HOST=$(get-config HOST)
+  case "$WF_HOST" in
+    github) get-attribute-gh $1 ;;
+    gitlab) get-attribute-gl $1 ;;
+  esac
 }
 
 function wf-get() {
   case "$1" in
-    conclusion) 
-      conclusion-map $(get-attribute "conclusion")
+    status)
+      WF_HOST="$(get-config HOST)" 
+      [[ "$WF_HOST" = "github" ]] \
+        && conclusion-map $(get-attribute-gh "conclusion") \
+        || conclusion-map $(get-attribute-gl "status")
       exit;;
-    status) 
-      get-attribute "status"
-      exit;;
-    name)
-      get-attribute "name"
+    *)
+      get-attribute $1
       exit;;
   esac
 }
-
-###### cool-prompt END ####

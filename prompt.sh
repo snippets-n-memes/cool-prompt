@@ -19,10 +19,10 @@ function set-template() {
       PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch)\\n\$(_END)\$(wf-get name):\$(wf-get conclusion)\\n$'
       ;;
     SHORT)
-      PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch):\$(_END)\$(wf-get conclusion)\\n\\\\$'
+      PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch):\$(_END)\$(wf-get status)\\n\\\\$'
       ;;
   esac
-  sed -i "s/\"PS1\": \"\"/\"PS1\": \"$PS1\"/" $(find-config)
+  sed -i -E "s/(\"PS1\":) \"\"/\1 \"$PS1\"/" $HOME/.cool-prompt/config.json
 }
 
 function Init() {
@@ -31,6 +31,8 @@ function Init() {
   [ ! "$OWNER" ] && OWNER="snippets-n-memes"
   [ ! "$REPO" ] && REPO="cool-prompt"
   [ ! "$WF_NAME" ] && WF_NAME="Sample Workflow"
+  [ ! "$WF_HOST" ] && WF_HOST="github"
+  [ ! "$PROJECT_ID" ] && PROJECT_ID="36257401"
   
   mkdir ~/.cool-prompt 
   cat <<EOF > ~/.cool-prompt/config.json
@@ -39,6 +41,8 @@ function Init() {
   "REPO": "$REPO",
   "WF_NAME": "$WF_NAME",
   "USER": "$USER",
+  "HOST": "$WF_HOST",
+  "URL": "",
   "PS1": ""
 }
 
@@ -51,7 +55,7 @@ EOF
   cp bashrc-block.sh ~/.cool-prompt/
 
   crontab -l 2>/dev/null >/tmp/temp-crontab
-  echo '* * * * * . $HOME/.bashrc; cd $PWD; bash --login $HOME/.cool-prompt/fetch.sh' >> /tmp/temp-crontab
+  echo '* * * * * . $HOME/.bashrc; bash --login $HOME/.cool-prompt/fetch.sh' >> /tmp/temp-crontab
   crontab /tmp/temp-crontab
 
   echo ". ~/.cool-prompt/bashrc-block.sh" >> /tmp/.bashrc
@@ -67,16 +71,7 @@ function Uninstall() {
 
   crontab -l | grep -v ".cool-prompt/fetch.sh" > /tmp/temp-crontab
   crontab /tmp/temp-crontab
-}
-
-function set-config() {
-  cat $(find-config) | jq \
-    --arg key "$1" \
-    --arg value "$2" \
-    '.[$key] = $value' \
-  > /tmp/config.json
-  
-  mv /tmp/config.json $(find-config)
+  rm /tmp/temp-crontab
 }
 
 while getopts "$OPTIONS" option; do
