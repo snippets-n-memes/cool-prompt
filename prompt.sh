@@ -10,6 +10,7 @@ function Help() {
     -h display this help message
     -i install 
     -u uninstall
+    -s set "key=value" in nearest config file
 EOF
 }
 
@@ -32,7 +33,7 @@ function Init() {
   [ ! "$REPO" ] && REPO="cool-prompt"
   [ ! "$WF_NAME" ] && WF_NAME="Sample Workflow"
   [ ! "$WF_HOST" ] && WF_HOST="github"
-  [ ! "$PROJECT_ID" ] && PROJECT_ID="36257401"
+  # [ ! "$PROJECT_ID" ] && PROJECT_ID="36257401"
   
   mkdir ~/.cool-prompt 
   cat <<EOF > ~/.cool-prompt/config.json
@@ -40,7 +41,6 @@ function Init() {
   "OWNER": "$OWNER",
   "REPO": "$REPO",
   "WF_NAME": "$WF_NAME",
-  "USER": "$USER",
   "HOST": "$WF_HOST",
   "URL": "",
   "PS1": ""
