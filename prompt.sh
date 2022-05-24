@@ -82,6 +82,7 @@ while getopts "$OPTIONS" option; do
       s) set-config ${OPTARG%%=*} ${OPTARG##*=} ;;
       # edit
       # list available attributes
+      # add new config
       ?) echo "USAGE: ./<scriptname> [-$OPTIONS]" ;;
    esac
 done
