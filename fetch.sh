@@ -11,8 +11,8 @@ function github-workflow() {
     | jq -r ".workflows[] | select(.name == \"$WF_NAME\") | .url") 
 
   curl -s -H "Accept: application/vnd.github.v3+json"  $(echo $url)/runs \
-    > "/tmp/$(config-name)_workflow_runs" \
-    2> $HOME/.cool-prompt/log
+    2> $HOME/.cool-prompt/log \
+    1> "/tmp/$(config-name)_workflow_runs"
 }
 
 function gitlab-pipeline() {
@@ -20,8 +20,8 @@ function gitlab-pipeline() {
 
   curl -s -H "PRIVATE-TOKEN: $PAT" \
     "https://gitlab.com/api/v4/projects/$PROJECT_ID/pipelines" \
-    > "/tmp/$(config-name)_workflow_runs" \
-    2> $HOME/.cool-prompt/log
+    2> $HOME/.cool-prompt/log \
+    1> "/tmp/$(config-name)_workflow_runs" 
 }
 
 function config-paths() {

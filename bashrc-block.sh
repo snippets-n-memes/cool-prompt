@@ -47,14 +47,19 @@ function conclusion-map () {
   esac
 }
 
+function get-attribute-gh() {
+  jq -r ".workflow_runs[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+}
+
+function get-attribute-gl() {
+  jq -r ".[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+}
+
 function get-attribute() {
-  case "$(get-config HOST)" in
-    github)
-      jq -r ".workflow_runs[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
-      ;;
-    gitlab)
-      jq -r ".[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
-      ;;
+  WF_HOST=$(get-config HOST)
+  case "$WF_HOST" in
+    github) get-attribute-gh $1 ;;
+    gitlab) get-attribute-gl $1 ;;
   esac
 }
 
