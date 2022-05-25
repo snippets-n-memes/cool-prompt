@@ -26,8 +26,19 @@ function config-name() {
 
 function get-config() {
   DIR=$(find-config)
-  [ "$1" = "PS1" ] && DIR=$HOME/.cool-prompt/config.json
-  jq -r ".$1" $DIR 
+  if [ "$1" = "PS1" ]; then
+    DIR=$HOME/.cool-prompt/config.json
+    jq -r ".$1" $DIR 
+  elif [ "$1" != "workflows" ]; then
+    jq ".workflows[].$1" $DIR
+  else 
+    jq -r ".$1" $DIR 
+  fi
+}
+
+function get-config-i() {
+  let "i = $1 + 1"
+  get-config $2 | sed -n "${i}p" 
 }
 
 function set-config() {
@@ -47,15 +58,12 @@ function git-branch() {
 
 function conclusion-map () {
   case $1 in 
-    success)
-      echo "$(_GREEN)⬤$(_END)"
-      exit;;
-    failure | failed)
-      echo "$(_RED)⬤$(_END)"
-      exit;;
-    *)
-      echo "$(_YELLOW)⬤$(_END)"
-      exit;;
+    success) 
+      echo -n "$(_GREEN)⬤$(_END)" ;;
+    failure | failed) 
+      echo -n "$(_RED)⬤$(_END)" ;;
+    *) 
+      echo -n "$(_YELLOW)⬤$(_END)" ;;
   esac
 }
 
@@ -64,27 +72,39 @@ function get-attribute-gh() {
 }
 
 function get-attribute-gl() {
-  jq -r ".[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+  jq -r ".[0].$1" "/tmp/$(config-name)_$2_workflow_runs" 2> /dev/null
 }
 
 function get-attribute() {
-  WF_HOST=$(get-config HOST)
-  case "$WF_HOST" in
-    github) get-attribute-gh $1 ;;
-    gitlab) get-attribute-gl $1 ;;
+  WF_HOST=$(get-config-i $1 HOST)
+  case "${WF_HOST[0]}" in
+    github) get-attribute-gh $2 ;;
+    gitlab) get-attribute-gl $2 ;;
   esac
 }
 
 function wf-get() {
   case "$1" in
     status)
-      WF_HOST="$(get-config HOST)" 
-      [[ "$WF_HOST" = "github" ]] \
-        && conclusion-map $(get-attribute-gh "conclusion") \
-        || conclusion-map $(get-attribute-gl "status")
+      WF_HOST=($(get-config HOST))
+      for i in ${!WF_HOST[@]}; do
+        [[ "${WF_HOST[$i]}" = "github" ]] \
+          && conclusion-map $(get-attribute-gh "conclusion" $i) \
+          || conclusion-map $(get-attribute-gl "status" $i)
+      done
       exit;;
     *)
       get-attribute $1
       exit;;
   esac
+}
+
+function wf-test() {
+  WF_HOST=($(get-config HOST))
+  for i in ${!WF_HOST[@]}; do
+    get-config-i $i WF_NAME
+    # [[ "${WF_HOST[$i]}" = "github" ]] \
+    #   && conclusion-map $(get-attribute-gh "conclusion" $i) \
+    #   || conclusion-map $(get-attribute-gl "status" $i)
+  done
 }

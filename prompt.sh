@@ -1,4 +1,4 @@
-OPTIONS="hius:"
+OPTIONS="hius:a"
 
 function Help() {
   cat <<EOF
@@ -74,15 +74,27 @@ function Uninstall() {
   rm /tmp/temp-crontab
 }
 
+function add-config() {
+  mkdir .cool-prompt 
+  cat <<EOF > .cool-prompt/config.json
+{
+  "OWNER": "$OWNER",
+  "REPO": "$REPO",
+  "WF_NAME": "$WF_NAME",
+  "HOST": "$WF_HOST",
+  "URL": ""
+}
+
+EOF
+}
+
 while getopts "$OPTIONS" option; do
    case "${option}" in
       h) Help ;;
       u) Uninstall ;;
       i) Init && echo ".bashrc configured" ;;
       s) set-config ${OPTARG%%=*} ${OPTARG##*=} ;;
-      # edit
-      # list available attributes
-      # add new config
+      a) add-config ;;
       ?) echo "USAGE: ./<scriptname> [-$OPTIONS]" ;;
    esac
 done
