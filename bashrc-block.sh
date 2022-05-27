@@ -19,9 +19,12 @@ function find-config() {
 }
 
 function config-name() {
-  find-config \
+  CONFIG_PATH=$(find-config \
     | awk -F'/.cool-prompt' '{print $1}' \
-    | tr '/' '_'
+    | tr '/' '_')
+
+  echo "${CONFIG_PATH}_$1"
+
 }
 
 function get-config() {
@@ -68,11 +71,11 @@ function conclusion-map () {
 }
 
 function get-attribute-gh() {
-  jq -r ".workflow_runs[0].$1" "/tmp/$(config-name)_workflow_runs" 2> /dev/null
+  jq -r ".workflow_runs[0].$1" "/tmp/$(config-name $2)" 2> /dev/null
 }
 
 function get-attribute-gl() {
-  jq -r ".[0].$1" "/tmp/$(config-name)_$2_workflow_runs" 2> /dev/null
+  jq -r ".[0].$1" "/tmp/$(config-name $2)" 2> /dev/null
 }
 
 function get-attribute() {

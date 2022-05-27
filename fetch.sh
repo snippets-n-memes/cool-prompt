@@ -16,7 +16,7 @@ function github-workflow() {
 
   curl -s -u ":$GH_PAT" -H "Accept: application/vnd.github.v3+json"  $URL/runs \
     2> $HOME/.cool-prompt/log \
-    1> "/tmp/$(config-name)_workflow_runs"
+    1> "/tmp/$(config-name $1)"
 }
 
 function gitlab-pipeline() {
@@ -25,7 +25,7 @@ function gitlab-pipeline() {
   curl -s -H "PRIVATE-TOKEN: $GL_PAT" \
     "https://gitlab.com/api/v4/projects/$PROJECT_ID/pipelines" \
     2> $HOME/.cool-prompt/log \
-    1> "/tmp/$(config-name)_workflow_runs" 
+    1> "/tmp/$(config-name $1)" 
 }
 
 function config-paths() {
