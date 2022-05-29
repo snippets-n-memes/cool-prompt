@@ -8,6 +8,10 @@ alias _BLACK="echo -e '\033[0;30m'"
 alias _YELLOW="echo -e '\033[1;33m'"
 alias _END="echo -e '\e[m'"
 
+function log() {
+  echo "[$(date +\"%T\")] $1" >> ~/.cool-prompt/execution-log
+}
+
 function find-config() {
   if [ -f ".cool-prompt/config.json" ]; then
     echo "${PWD%/}/.cool-prompt/config.json"
@@ -24,7 +28,6 @@ function config-name() {
     | tr '/' '_')
 
   echo "${CONFIG_PATH}_$1"
-
 }
 
 function get-config() {
@@ -33,7 +36,7 @@ function get-config() {
     DIR=$HOME/.cool-prompt/config.json
     jq -r ".$1" $DIR 
   elif [ "$1" != "workflows" ]; then
-    jq ".workflows[].$1" $DIR
+    jq -r ".workflows[].$1" $DIR
   else 
     jq -r ".$1" $DIR 
   fi
@@ -48,7 +51,8 @@ function set-config() {
   cat $(find-config) | jq \
     --arg key "$1" \
     --arg value "$2" \
-    '.[$key] = $value' \
+    --argjson index "$3" \
+    '.workflows[$index][$key] = $value' \
   > /tmp/config.json
   
   mv /tmp/config.json $(find-config)
