@@ -15,6 +15,8 @@ function log() {
 function find-config() {
   if [ -f ".cool-prompt/config.json" ]; then
     echo "${PWD%/}/.cool-prompt/config.json"
+  elif [ -f ".cool-prompt.conf" ]; then
+    echo "${PWD%/}/.cool-prompt.conf"
   elif [ "$PWD" = / ]; then
     echo $HOME/.cool-prompt/config.json 
   else

@@ -1,4 +1,4 @@
-OPTIONS="hius:a"
+OPTIONS="hius:ap:"
 
 function Help() {
   cat <<EOF
@@ -21,6 +21,11 @@ function set-template() {
       ;;
     SHORT)
       PS1='\$(_CYAN)[\\\\u: \\\\W]\$(git-branch):\$(_END)\$(wf-get status)\\n\\\\$'
+      ;;
+    PRESERVE)
+      # current=$(cat ~/.bashrc | awk -F"'" '/PS1*/ { print $2 }' | tail -n1)
+      # echo $current
+      PS1="\$(wf-get status)"
       ;;
   esac
   sed -i -E "s/(\"PS1\":) \"\"/\1 \"$PS1\"/" $HOME/.cool-prompt/config.json
@@ -54,7 +59,7 @@ function Init() {
 EOF
 
   . bashrc-functions.sh
-  set-template SHORT
+  set-template SHORT 
 
   cp fetch.sh ~/.cool-prompt/
   cp bashrc-functions.sh ~/.cool-prompt/
@@ -98,12 +103,19 @@ function add-config() {
 EOF
 }
 
+function set-ps1() {
+  echo $1
+  echo $1 \
+  |sed -E 's/\\([adehHjlnrstT@uvVwW!#$])/\\\\\1/g'
+}
+
 while getopts "$OPTIONS" option; do
    case "${option}" in
       h) Help ;;
       u) Uninstall ;;
       i) Init && echo ".bashrc configured" ;;
       s) set-config ${OPTARG%%=*} ${OPTARG##*=} ;;
+      p) set-ps1 $OPTARG ;;
       a) add-config ;;
       ?) echo "USAGE: ./<scriptname> [-$OPTIONS]" ;;
    esac
