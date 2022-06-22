@@ -104,8 +104,8 @@ EOF
 }
 
 function set-ps1() {
-  echo $1
-  echo $1 \
+  echo $@
+  echo $@ \
   |sed -E 's/\\([adehHjlnrstT@uvVwW!#$])/\\\\\1/g'
 }
 
@@ -115,7 +115,7 @@ while getopts "$OPTIONS" option; do
       u) Uninstall ;;
       i) Init && echo ".bashrc configured" ;;
       s) set-config ${OPTARG%%=*} ${OPTARG##*=} ;;
-      p) set-ps1 $OPTARG ;;
+      p) set-ps1 "${OPTARG[@]}" ;;
       a) add-config ;;
       ?) echo "USAGE: ./<scriptname> [-$OPTIONS]" ;;
    esac
