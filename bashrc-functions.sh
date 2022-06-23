@@ -15,6 +15,8 @@ function log() {
 function find-config() {
   if [ -f ".cool-prompt/config.json" ]; then
     echo "${PWD%/}/.cool-prompt/config.json"
+  elif [ -f ".cool-prompt.json" ]; then
+    echo "${PWD%/}/.cool-prompt.json"
   elif [ "$PWD" = / ]; then
     echo $HOME/.cool-prompt/config.json 
   else
@@ -95,9 +97,7 @@ function wf-get() {
     status)
       WF_HOST=($(get-config HOST))
       for i in ${!WF_HOST[@]}; do
-        [[ "${WF_HOST[$i]}" = "github" ]] \
-          && conclusion-map $(get-attribute-gh "conclusion" $i) \
-          || conclusion-map $(get-attribute-gl "status" $i)
+        cat "/tmp/$(config-name $i)_last_status"
       done
       exit;;
     *)
