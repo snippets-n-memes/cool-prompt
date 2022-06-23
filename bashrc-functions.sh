@@ -97,7 +97,7 @@ function wf-get() {
     status)
       WF_HOST=($(get-config HOST))
       for i in ${!WF_HOST[@]}; do
-        cat "/tmp/$(config-name $i)_last_status"
+        conclusion-map $(cat "/tmp/$(config-name $i)_last_status" 2> /dev/null)
       done
       exit;;
     *)

@@ -51,8 +51,8 @@ function config-paths() {
 
 log "fetch.sh called"  
 config-paths > ~/.cool-prompt/paths
-touch ~/.cool-prompt/wf_hosts
-touch ~/.cool-prompt/wf_dirs
+echo "" > ~/.cool-prompt/wf_hosts
+echo "" > ~/.cool-prompt/wf_dirs
 while read dir; do
     log "config directory $dir found"  
     cd $dir
