@@ -7,6 +7,7 @@ function github-workflow() {
   REPO=$(get-config-i $1 REPO)
   WF_NAME=$(get-config-i $1 WF_NAME)
   URL=$(get-config-i $1 URL)
+  NAME=$(config-name $1)
 
   if [ -z ${URL} ]; then
     log "URL unset, fetching"
@@ -20,18 +21,23 @@ function github-workflow() {
 
   curl -s -u ":$GH_PAT" -H "Accept: application/vnd.github.v3+json"  $URL/runs \
     2> $HOME/.cool-prompt/log \
-    1> "/tmp/$(config-name $1)"
+    1> "/tmp/$NAME"
+
+  jq -r '.workflow_runs[0].conclusion' "/tmp/$NAME" > "/tmp/${NAME}_last_status"
 }
 
 function gitlab-pipeline() {
   log "gitlab-workflow called"
 
   PROJECT_ID=$(get-config-i $1 PROJECT_ID)
+  NAME=$(config-name $1)
 
   curl -s -H "PRIVATE-TOKEN: $GL_PAT" \
     "https://gitlab.com/api/v4/projects/$PROJECT_ID/pipelines" \
     2> $HOME/.cool-prompt/log \
-    1> "/tmp/$(config-name $1)" 
+    1> "/tmp/$NAME" 
+
+  jq -r '.[0].status' "/tmp/$NAME" > "/tmp/${NAME}_last_status"
 }
 
 function config-paths() {
